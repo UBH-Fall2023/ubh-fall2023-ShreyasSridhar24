@@ -32,6 +32,12 @@ class JournalAddView(FormView):
     # def get_context_data(self, *args, **kwargs):
     #     context = super().get_context_data(**args, **kwargs)
     #     return context
+
+    def get(self, request, *args, **kwargs):
+        journal_form = JournalForm(initial={'user': self.request.user.id})
+        context = {}
+        context['form'] = journal_form
+        return render(request, self.template_name, context)
     
     def get_success_url(self):
         messages.success(self.request, 'Added journal entry.')
