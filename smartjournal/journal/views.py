@@ -21,7 +21,6 @@ class JournalAddView(FormView):
         user = self.request.user
         journal_entry = Journal.objects.create(
             title = form_data.get('title'),
-            user = form_data.get('user'),
             message = form_data.get('message'),
             date = form_data.get('date'),
             is_private = form_data.get('is_private'),
@@ -34,14 +33,14 @@ class JournalAddView(FormView):
     #     return context
 
     def get(self, request, *args, **kwargs):
-        journal_form = JournalForm(initial={'user': self.request.user.id})
+        journal_form = JournalForm()
         context = {}
         context['form'] = journal_form
         return render(request, self.template_name, context)
     
     def get_success_url(self):
         messages.success(self.request, 'Added journal entry.')
-        return reverse('journal_add')
+        return reverse('journal-add')
     
 class JournalDetailView(LoginRequiredMixin, TemplateView):
     def test_func(self):

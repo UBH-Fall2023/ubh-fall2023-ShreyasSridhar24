@@ -3,5 +3,15 @@
 {% load static %}
 
 {% block content %}
-{{ form | crispy }}
+<div class="topnav">
+  <a class="active" href="#home">Home</a>
+  <a href="{% url 'journal-detail' %}">Dashboard</a>
+</div>
+<div style="padding: 20px">
+  <form method="post">
+    {% csrf_token %}
+    {{ form | crispy }}
+    <input class="btn btn-primary" type="submit" value="Save" />
+  </form>
+</div>
 {% endblock %}

@@ -5,8 +5,9 @@ from django.contrib.auth.models import User
 
 class Journal(TimeStampedModel):
     title =  models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(default='image.png')
+    file = models.FileField(default='newfile.txt')
     message = models.TextField()
     date = models.DateTimeField()
     is_private = models.BooleanField(default=False)
