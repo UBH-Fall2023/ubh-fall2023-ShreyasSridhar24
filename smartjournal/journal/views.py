@@ -11,8 +11,10 @@ from journal.models import Journal
 
 # Create your views here.
 
-class JournalAddView(LoginRequiredMixin, FormView):
+# class JournalAddView(LoginRequiredMixin, FormView):
+class JournalAddView(FormView):
     form_class = JournalForm
+    template_name = 'journal/add_journal_entry.html'
     
     def form_valid(self, form):
         form_data = form.cleaned_data
@@ -27,13 +29,14 @@ class JournalAddView(LoginRequiredMixin, FormView):
 
         return super().form_valid(form)
     
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(**args, **kwargs)
-        return context
+    # def get_context_data(self, *args, **kwargs):
+    #     context = super().get_context_data(**args, **kwargs)
+    #     return context
     
     def get_success_url(self):
         messages.success(self.request, 'Added journal entry.')
         return reverse('journal_add')
+    
 class JournalDetailView(LoginRequiredMixin, TemplateView):
     def test_func(self):
         """ UserPassesTestMixin Tests"""
