@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from smartjournal import journal
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('journal-add', journal.urls)
 ]

@@ -1,7 +1,10 @@
+from typing import Any
 from django.shortcuts import render
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
+from django.urls import reverse
+from django.contrib import messages
 
 from smartjournal.journal.forms import JournalForm
 from smartjournal.journal.models import Journal
@@ -23,3 +26,11 @@ class JournalAddView(LoginRequiredMixin, FormView):
         )
 
         return super().form_valid(form)
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**args, **kwargs)
+        return context
+    
+    def get_success_url(self):
+        messages.success(self.request, 'Added journal entry.')
+        return reverse('journal_add')
