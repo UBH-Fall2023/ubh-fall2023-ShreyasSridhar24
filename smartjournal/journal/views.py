@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 
 from smartjournal.journal.forms import JournalForm
+from smartjournal.journal.models import Journal
 
 # Create your views here.
 
