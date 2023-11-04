@@ -6,8 +6,8 @@ from django.views.generic import FormView
 from django.urls import reverse
 from django.contrib import messages
 
-from smartjournal.journal.forms import JournalForm
-from smartjournal.journal.models import Journal
+from journal.forms import JournalForm
+from journal.models import Journal
 
 # Create your views here.
 

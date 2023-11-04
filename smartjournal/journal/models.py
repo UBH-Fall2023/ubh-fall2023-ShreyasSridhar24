@@ -1,11 +1,11 @@
 from django.db import models
-from model_utils.models import TimeStampedModel
+from django_extensions.db.models import TimeStampedModel
 from django.contrib.auth.models import User
 # Create your models here.
 
 class Journal(TimeStampedModel):
     title =  models.TextField()
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     message = models.TextField()
     date = models.DateTimeField()
