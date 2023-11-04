@@ -1,1 +1,1 @@
-# Welcome to our grading AI app!
+#Journal
