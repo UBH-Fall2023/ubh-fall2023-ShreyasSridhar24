@@ -1,6 +1,4 @@
-{% extends "common/base.html" %}
 {% load crispy_forms_tags %}
-{% load common_tags %}
 {% load static %}
 
 
@@ -14,9 +12,6 @@ Add Journal
 
 <form method="post">
   {% csrf_token %}
-  {{form |crispy}}
   <input class="btn btn-success" type="submit" value="Add" />
-  <a class="btn btn-secondary" href="{% url 'allocation-detail' allocation.pk %}" role="button">Back to
-    Allocation</a><br>
 </form>
 {% endblock %}
