@@ -11,7 +11,6 @@ class Journal(TimeStampedModel):
     image = models.ImageField(null=True, blank=True)
     files = models.FileField(null=True, blank=True)
     audio_file = models.FileField(default=None, null=True, blank=True)
-    
     message = models.TextField(blank=True)
     date = models.DateField()
     is_private = models.BooleanField(default=False)

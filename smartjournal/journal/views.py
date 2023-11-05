@@ -155,17 +155,17 @@ class JournalDetailView(DetailView):
 
         # context["data"] = data
 
-        completion2 = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Pretend you are a therapist. Give me some feedback about the next string as if it was a private entry in my journal. \""+journal_obj.message+"\""},
-            # {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
-        ]
-        )
+        # completion2 = openai.ChatCompletion.create(
+        # model="gpt-3.5-turbo",
+        # messages=[
+        #     {"role": "system", "content": "Pretend you are a therapist. Give me some feedback about the next string as if it was a private entry in my journal. \""+journal_obj.message+"\""},
+        #     # {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
+        # ]
+        # )
 
-        data2 = completion2.choices[0].message["content"]
-        context["data2"]= str(data2)
-        print(data2)
+        # data2 = completion2.choices[0].message["content"]
+        # context["data2"]= str(data2)
+        # print(data2)
         return context
     # pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
@@ -189,27 +189,42 @@ class JournalOverview(TemplateView):
 
     def get(self, request, *args, **kwargs):
         # journal_obj = get_object_or_404(Journal, pk=self.kwargs.get('pk'))
-        x_data = [0,1,2,3]
-        y_data = [x**2 for x in x_data]
+        context = {}
+        user = self.request.user
+        context["avg"] = 0
+        print(Journal.objects.all())
+        avg = 0
+        avg_n=0
+        listify = []
+        for journal in Journal.objects.all():
+            data = journal.data
+            print(data)
+            if data:
+                data_list = json.loads(data)
+                # print(type(data_list))
+                if data_list:
+                    # try:
+                    avg_n += 1
+                    avg += (data_list["valence"] + data_list["arousal"] + data_list["anger"] + data_list["happiness"] + data_list["sadness"])/5
+                    # except Exception as e:
+                    #     avg+=0
+                    #     avg_n+=0
+
+                    if avg_n > 0:
+                        listify.append(avg)
+        x_data = [x for x in range(avg_n)]
+        y_data = listify
         plot_div = plot([Scatter(x=x_data, y=y_data,
                         mode='lines', name='test',
                         opacity=0.8, marker_color='green')],
                output_type='div')
         context = {}
         context["sample_graph"] = plot_div
-        user = self.request.user
-        context["avg"] = 0
-        avg = 0
-        avg_n=0
-        for m in user.journal_set.all():
-            cav=0
-            avg_n+=1
-            for n in json.loads(m.data):
-                cav+=n
-            avg+=cav
-            context["avg"] == avg/avg_n
-        if(context["avg"]<=-0.5):
-            print("call therapy!")
+        print(x_data)
+        print(y_data)
+        context["avg"] = avg
+        if "avg" in context and context["avg"] <= -0.5:
+            print("Call therapy!")
 
         return render(request, self.template_name, context)
 # class JournalView(TemplateView):
