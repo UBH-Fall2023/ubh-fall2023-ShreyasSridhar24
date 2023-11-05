@@ -15,7 +15,7 @@ import pytesseract
 from PIL import Image
 # import cv2
 import numpy as np
-import speech_recognition as sr
+# import speech_recognition as sr
 
 from plotly.offline import plot
 from plotly.graph_objs import Scatter
@@ -229,8 +229,9 @@ class JournalOverview(TemplateView):
         avg_n=0
         listify = []
         streak = 0
-        queryset = Journal.objects.all().values()
+        queryset = Journal.objects.all()
         print(type(queryset))
+        queryset = queryset
         for journal in queryset:
             data = journal.data
             date = journal.date
