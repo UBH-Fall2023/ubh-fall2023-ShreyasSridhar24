@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.urls import path, include
 from django.contrib.auth.views import LoginView, LogoutView
+from django.conf.urls.static import static
 EXTRA_APPS = settings.INSTALLED_APPS
 
 urlpatterns = [
@@ -31,4 +32,4 @@ urlpatterns = [
             redirect_authenticated_user=True),
         name='login'
         ),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

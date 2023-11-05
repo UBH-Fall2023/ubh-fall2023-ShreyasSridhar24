@@ -1,0 +1,32 @@
+{% load crispy_forms_tags %}
+{% load static %}
+
+
+{% block title %}
+My journal entry - {{ journal.title }}
+
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="card mb-3">
+  <div class="card-body">
+    <h3 class="card-title">
+    </h3>
+    <p class="card-text">{{ journal.data2 }}</p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
