@@ -19,7 +19,7 @@ import numpy as np
 # import speech_recognition as sr
 
 from plotly.offline import plot
-from plotly.graph_objs import Scatter
+from plotly.graph_objs import Scatter, Layout, Pie, Figure
 
 from django.contrib.auth import authenticate, login
 
@@ -233,6 +233,11 @@ class JournalOverview(TemplateView):
         queryset = Journal.objects.all()
         print(type(queryset))
         queryset = list(queryset)
+        valence = []
+        arousal = []
+        anger = []
+        happiness = []
+        sadness = []
         for journal in queryset:
             data = journal.data
             date = journal.date
@@ -250,6 +255,11 @@ class JournalOverview(TemplateView):
                 if data_list:
                     # try:
                     avg_n += 1
+                    happiness.append(data_list["happiness"])
+                    sadness.append(data_list["sadness"])
+                    anger.append(data_list["anger"])
+                    arousal.append(data_list["arousal"])
+                    valence.append(data_list["valence"])
                     avg += (data_list["valence"] + data_list["arousal"] + data_list["anger"] + data_list["happiness"] + data_list["sadness"])/5
                     # except Exception as e:
                     #     avg+=0
@@ -259,13 +269,63 @@ class JournalOverview(TemplateView):
                         listify.append(avg)
         x_data = [x for x in range(avg_n)]
         y_data = listify
-        plot_div = plot([Scatter(x=x_data, y=y_data,
-                        mode='lines', name='test',
-                        opacity=0.8, marker_color='green')],
-               output_type='div')
+        y_data_ = len(valence)
+        d1 = Scatter(y=valence, x=y_data, mode='lines', name='Valence')
+        d2 = Scatter(y=happiness, x=y_data, mode='lines', name='Happiness')
+        d3 = Scatter(y=sadness, x=y_data, mode='lines', name='Sadness')
+        d4 = Scatter(y=anger, x=y_data, mode='lines', name='Anger')
+        d5 = Scatter(y=arousal, x=y_data, mode='lines', name='Arousal')
+        d6 = Scatter(y=x_data, x=y_data, mode='lines', name='Average')
+        data_ = [d1,d2,d3,d4,d5,d6]
+        layout_ = Layout(title='Multiple Lines Scatter Plot',
+        xaxis=dict(title='X-Axis'),
+        yaxis=dict(title='Y-Axis')
+    )
+        fig = Figure(data=data_, layout=layout_)
+        plot_div = fig.to_html(full_html=False)
+        # context["sample_graph"] = plot_div
+
+        d1 = Pie(values=[sum(valence),sum(happiness),sum(sadness),sum(anger),sum(arousal),sum(x_data)],labels=['Valence','Happiness','Sadness','Anger','Arousal','Average'])
+        # d2 = Pie(y=sum(happiness), label='Happiness')
+        # d3 = Pie(y=sum(sadness), label='Sadness')
+        # d4 = Pie(y=sum(anger), label='Anger')
+        # d5 = Pie(y=sum(arousal), label='Arousal')
+        # d6 = Pie(y=sum(x_data), label='Average')
+        data__ = d1
+        layout__ = Layout(title='Pie Plot of Emotions since the first entry',
         
-        context = {}
+    )
+        fig = Figure(data=data__, layout=layout__)
+        plot_div_ = fig.to_html(full_html=False)
         context["sample_graph"] = plot_div
+        context["pie_graph"] = plot_div_
+        # plot([Scatter(x=valence, y=y_data,
+        #                 mode='lines', name='valence',
+        #                 opacity=0.8, marker_color='orange')],
+        #        output_type='div')
+        # plot([Scatter(x=arousal, y=y_data,
+        #                 mode='lines', name='arousal',
+        #                 opacity=0.8, marker_color='blue')],
+        #        output_type='div')
+        # plot([Scatter(x=happiness, y=y_data,
+        #                 mode='lines', name='happiness',
+        #                 opacity=0.8, marker_color='green')],
+        #        output_type='div')
+        # plot([Scatter(x=sadness, y=y_data,
+        #                 mode='lines', name='sadness',
+        #                 opacity=0.8, marker_color='red')],
+            #    output_type='div')
+        # plot([Scatter(x=x_data, y=y_data,
+        #                 mode='lines', name='test',
+        #                 opacity=0.8, marker_color='green')],
+        #        output_type='div')
+        # plot([Scatter(x=x_data, y=y_data,
+        #                 mode='lines', name='test',
+        #                 opacity=0.8, marker_color='green')],
+        #        output_type='div')
+        
+        # context = {}
+        # context["sample_graph"] = plot.show()
         print(x_data)
         print(y_data)
         context["avg"] = avg
