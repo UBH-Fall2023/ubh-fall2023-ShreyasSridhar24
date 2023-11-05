@@ -9,9 +9,9 @@ class DateInput(forms.DateInput):
 class JournalForm(ModelForm):
     class Meta:
         model = Journal
-        fields = '__all__'
+        exclude = ('data',)
         widgets = {
-            "date": DateInput(attrs={'class':'datepicker', 'value': datetime.datetime.now().strftime("%Y-%m-%d")}),
+            "date": DateInput(attrs={'class':'datepicker', 'value': datetime.datetime.now().strftime("%Y-%m-%d)                                                                                      ")}),
         }
         labels = {
             "message": "What's on your mind?",

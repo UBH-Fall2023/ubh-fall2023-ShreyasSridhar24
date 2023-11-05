@@ -22,7 +22,10 @@ from plotly.graph_objs import Scatter
 from django.contrib.auth import authenticate, login
 
 import time
-# import easyocr
+import easyocr
+
+from skimage import io
+
 # import speech_recognition as sr
 # from gtts import gTTS
 
@@ -34,22 +37,13 @@ import bcrypt
 
 # Create your views here.
 
-<<<<<<< Updated upstream
-class JournalAddView(FormView):
-# class JournalAddView(FormView):
-=======
 # class JournalAddView(LoginRequiredMixin, FormView):
 class JournalAddView(FormView):
->>>>>>> Stashed changes
     model = Journal
     form_class = JournalForm
     template_name = 'journal/add_journal_entry.html'
     pk_hold = 1
-<<<<<<< Updated upstream
     openai.api_key = "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"
-
-=======
->>>>>>> Stashed changes
 
     # def get_audio():
     #     r = sr.Recognizer()
@@ -71,7 +65,6 @@ class JournalAddView(FormView):
         message = form_data.get('message')
         date = form_data.get('date')
         is_private = form_data.get('is_private')
-<<<<<<< Updated upstream
         image = form_data.get('image')            
         files = form_data.get('file')
         audio = form_data.get("audio")
@@ -79,19 +72,16 @@ class JournalAddView(FormView):
             image_ = Image.open(image)
             text = pytesseract.image_to_string(image_)
             print(text)
-            message = str(text)
-=======
-        image = form_data.get('image')  
-        print(type(image))          
+        #     message = str(text)
+        # image = form_data.get('image')  
+        # print(type(image))          
         file = form_data.get('file')
->>>>>>> Stashed changes
         # process data here (image, file, message)
         # image_enc = bytearray(journal_entry.image)
         # for index, values in enumerate(image_enc):
         #     image_enc[index] = values ^ 1
         # image_enc.write(image_enc)
         # image_enc.close()
-<<<<<<< Updated upstream
         # reader = easyocr.Reader(['en'])
         # # image_words = reader.readtext(image, detail=0)
         # if(files):
@@ -107,11 +97,11 @@ class JournalAddView(FormView):
 
 
         journal_entry = Journal.objects.create(title = fernet.encrypt(title.encode()), message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, files = files, data = data)
-=======
-        reader = easyocr.Reader(['en'])
-        image_words = reader.readtext(image.read(), detail=0)
-        journal_entry = Journal.objects.create(title = title, message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, file = file)
->>>>>>> Stashed changes
+        # if image:
+        #     img = io.imread(image)
+        #     reader = easyocr.Reader(['en'])
+        #     image_words = reader.readtext(img.read(), detail=0)
+        # journal_entry = Journal.objects.create(title = title, message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, file = file)
         self.pk_hold = journal_entry.pk
         messages.success(self.request, f"Journal entry from {journal_entry.date} saved!")
         return super().form_valid(form)

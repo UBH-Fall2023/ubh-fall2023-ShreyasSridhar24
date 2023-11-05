@@ -5,6 +5,5 @@ import journal.views as views
 urlpatterns = [
     path('journal-add', views.JournalAddView.as_view(), name='journal-add'),
     path('journal-detail', views.JournalDetailView.as_view(), name='journal-detail'),
-    # path('journal', views.Journal.as_view(), name='journal-'),
-
+    path('', views.JournalOverview.as_view()),
 ]
