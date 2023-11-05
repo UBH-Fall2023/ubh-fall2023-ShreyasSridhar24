@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendar and Journal</title>
+<style>
+  body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f4f4;
+    color: #333;
+  }
+  .container {
+    display: flex;
+    height: 100%;
+  }
+  .left-section {
+    width: 33.33%;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  }
+  .calendar, .todo-list {
+    height: 50%;
+    padding: 20px;
+    overflow: auto;
+  }
+  .calendar {
+    background: #e8f0fe;
+    border-bottom: 1px solid #ddd;
+  }
+  .todo-list {
+    background: #fee8e6;
+  }
+  .right-section {
+    width: 66.66%;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    background: #e7edf3;
+  }
+  .right-section h1, .right-section h2 {
+    margin: 0 0 20px 0;
+    color: #5a5a5a;
+  }
+  .right-section h1 {
+    font-size: 2.5em;
+  }
+  .right-section h2 {
+    font-size: 1.5em;
+  }
+  .textbox-container {
+    position: relative;
+    margin-bottom: 40px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  .textbox {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin: 10px;
+    height: 100px;
+    font-size: 1em;
+  }
+  .icon {
+    position: absolute;
+    top: 15px;
+    cursor: pointer;
+    font-size: 1.2em;
+  }
+  .mic, .scan, .file-upload {
+    left: 20px;
+  }
+  .submit {
+    right: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="left-section">
+    <div class="calendar">
+      <!-- Dynamic calendar goes here -->
+    </div>
+    <div class="todo-list">
+      <!-- To-do list goes here -->
+    </div>
+  </div>
+  <div class="right-section">
+    <h1>Hello, let's Journal</h1>
+    <h2>How am I feeling today?</h2>
+    <div class="textbox-container">
+      <i class="icon mic">🎤</i>
+      <i class="icon scan">🔍</i>
+      <i class="icon file-upload">📁</i>
+      <textarea class="textbox"></textarea>
+      <i class="icon submit">➡️</i>
+    </div>
+    <h2>How might I... [get the job done that's worrying me]</h2>
+    <div class="textbox-container">
+      <textarea class="textbox"></textarea>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
