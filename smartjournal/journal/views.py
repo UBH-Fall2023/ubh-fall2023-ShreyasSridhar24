@@ -70,9 +70,8 @@ class JournalAddView(FormView):
         audio = form_data.get("audio")
         if(image):
             image_ = Image.open(image)
-            text = pytesseract.image_to_string(image_)
-            print(text)
-        #     message = str(text)
+            text = pytesseract.image_to_string(image_, lang="eng")
+            message = str(text)
         # image = form_data.get('image')  
         # print(type(image))          
         file = form_data.get('file')
@@ -96,7 +95,7 @@ class JournalAddView(FormView):
         data = completion.choices[0].message["content"]
 
 
-        journal_entry = Journal.objects.create(title = fernet.encrypt(title.encode()), message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, files = files, data = data)
+        journal_entry = Journal.objects.create(title = title, message = message, date = date, is_private = is_private, image = image, files = files, data = data)
         # if image:
         #     img = io.imread(image)
         #     reader = easyocr.Reader(['en'])
@@ -176,7 +175,7 @@ class JournalDetailView(DetailView):
     
 class JournalOverview(TemplateView):
     model = Journal
-    template_name = 'journal/journal_overview.html'
+    template_name = 'journal/journal_view.html'
     openai.api_key = "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"
     print(openai.api_key)
 
@@ -185,11 +184,11 @@ class JournalOverview(TemplateView):
         # if self.request.user.is_superuser:
         #     return True
 
-        journal_obj = get_object_or_404(Journal, pk=self.kwargs.get('pk'))
+        # journal_obj = get_object_or_404(Journal, pk=self.kwargs.get('pk'))
         return True
 
     def get(self, request, *args, **kwargs):
-        journal_obj = get_object_or_404(Journal, pk=self.kwargs.get('pk'))
+        # journal_obj = get_object_or_404(Journal, pk=self.kwargs.get('pk'))
         x_data = [0,1,2,3]
         y_data = [x**2 for x in x_data]
         plot_div = plot([Scatter(x=x_data, y=y_data,
@@ -198,7 +197,7 @@ class JournalOverview(TemplateView):
                output_type='div')
         context = {}
         context["sample_graph"] = plot_div
-        user = journal_obj.user
+        user = self.request.user
         context["avg"] = 0
         avg = 0
         avg_n=0
@@ -208,12 +207,9 @@ class JournalOverview(TemplateView):
             for n in json.loads(m.data):
                 cav+=n
             avg+=cav
-        context["avg"] == avg/avg_n
+            context["avg"] == avg/avg_n
         if(context["avg"]<=-0.5):
             print("call therapy!")
-
-            
-
 
         return render(request, self.template_name, context)
 # class JournalView(TemplateView):

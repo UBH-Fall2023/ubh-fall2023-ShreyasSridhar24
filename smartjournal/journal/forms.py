@@ -9,7 +9,7 @@ class DateInput(forms.DateInput):
 class JournalForm(ModelForm):
     class Meta:
         model = Journal
-        exclude = ('data',)
+        exclude = ('data', 'user')
         widgets = {
             "date": DateInput(attrs={'class':'datepicker', 'value': datetime.datetime.now().strftime("%Y-%m-%d)                                                                                      ")}),
         }
