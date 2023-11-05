@@ -22,8 +22,8 @@ from django.contrib.auth import authenticate, login
 
 import time
 import easyocr
-import speech_recognition as sr
-from gtts import gTTS
+# import speech_recognition as sr
+# from gtts import gTTS
 
 from cryptography.fernet import Fernet
 key = Fernet.generate_key()
@@ -38,18 +38,18 @@ class JournalAddView(LoginRequiredMixin, FormView):
     template_name = 'journal/add_journal_entry.html'
 
 
-    def get_audio():
-        r = sr.Recognizer()
-        with sr.Microphone() as source:
-            audio = r.listen(source)
-            said = ""
-            try:
-                said = r.recognize_google(audio)
-                print(said)
-            except Exception as e:
-                print("Exception: " + str(e))
+    # def get_audio():
+    #     r = sr.Recognizer()
+    #     with sr.Microphone() as source:
+    #         audio = r.listen(source)
+    #         said = ""
+    #         try:
+    #             said = r.recognize_google(audio)
+    #             print(said)
+    #         except Exception as e:
+    #             print("Exception: " + str(e))
 
-        return said
+    #     return said
 
     def form_valid(self, form):
         form_data = form.cleaned_data
@@ -80,7 +80,7 @@ class JournalAddView(LoginRequiredMixin, FormView):
         journal_form = JournalForm()
         context = {}
         context['form'] = journal_form
-        context['mic'] = self.get_audio()
+        # context['mic'] = self.get_audio()
         return render(request, self.template_name, context)
     
     def get_success_url(self):
