@@ -23,13 +23,13 @@ EXTRA_APPS = settings.INSTALLED_APPS
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('journal/', include('journal.urls')),
-    path("accounts/", include("django.contrib.auth.urls")),
-    path('login',
+    path('', include('journal.urls')),
+    # path("accounts/", include("django.contrib.auth.urls")),
+    path('login/',
         LoginView.as_view(
-            template_name='/login.html',
+            template_name='/registration/login.html',
             extra_context={'EXTRA_APPS': EXTRA_APPS},
             redirect_authenticated_user=True),
         name='login'
-        ),
+    ),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

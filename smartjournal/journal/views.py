@@ -18,26 +18,57 @@ import numpy as np
 from plotly.offline import plot
 from plotly.graph_objs import Scatter
 
+from django.contrib.auth import authenticate, login
+
+import time
+import easyocr
+import speech_recognition as sr
+from gtts import gTTS
+
+from cryptography.fernet import Fernet
+key = Fernet.generate_key()
+fernet = Fernet(key)
+
 # Create your views here.
 
-# class JournalAddView(LoginRequiredMixin, FormView):
-class JournalAddView(FormView):
+class JournalAddView(LoginRequiredMixin, FormView):
+# class JournalAddView(FormView):
     model = Journal
     form_class = JournalForm
     template_name = 'journal/add_journal_entry.html'
-    pk_hold = 1
+
+
+    def get_audio():
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            audio = r.listen(source)
+            said = ""
+            try:
+                said = r.recognize_google(audio)
+                print(said)
+            except Exception as e:
+                print("Exception: " + str(e))
+
+        return said
+
     def form_valid(self, form):
         form_data = form.cleaned_data
         user = self.request.user
-        journal_entry = Journal.objects.create(
-            title = form_data.get('title'),
-            message = form_data.get('message'),
-            date = form_data.get('date'),
-            is_private = form_data.get('is_private'),
-        )
-        self.pk_hold = journal_entry.pk
-        print(self.pk_hold)
-
+        title = form_data.get('title')
+        message = form_data.get('message')
+        date = form_data.get('date')
+        is_private = form_data.get('is_private')
+        image = form_data.get('image')            
+        file = form_data.get('file')
+        # process data here (image, file, message)
+        # image_enc = bytearray(journal_entry.image)
+        # for index, values in enumerate(image_enc):
+        #     image_enc[index] = values ^ 1
+        # image_enc.write(image_enc)
+        # image_enc.close()
+        reader = easyocr.Reader(['en'])
+        image_words = reader.readtext(image, detail=0)
+        journal_entry = Journal.objects.create(title = fernet.encrypt(title.encode()), message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, file = file)
         messages.success(self.request, f"Journal entry from {journal_entry.date} saved!")
         return super().form_valid(form)
     
@@ -49,6 +80,7 @@ class JournalAddView(FormView):
         journal_form = JournalForm()
         context = {}
         context['form'] = journal_form
+        context['mic'] = self.get_audio()
         return render(request, self.template_name, context)
     
     def get_success_url(self):
