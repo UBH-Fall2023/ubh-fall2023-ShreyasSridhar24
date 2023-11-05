@@ -1,3 +1,5 @@
+# from datetime import datetime
+import datetime
 import json
 from typing import Any
 import os
@@ -197,12 +199,17 @@ class JournalOverview(TemplateView):
         avg_n=0
         listify = []
         streak = 0
-        queryset = Journal.objects.all().values()
-        print(type(queryset))
+        queryset = Journal.objects.all()
+        # print(type(list(queryset)))
+        queryset = list(queryset)
         for journal in queryset:
             data = journal.data
             date = journal.date
-            # if 
+            if queryset.index(journal) != len(queryset)-1:
+                if (datetime.date.today() + datetime.timedelta(days=-1)) == datetime.date.today():
+                    streak += 1
+                else:
+                    streak = 0
             print(data)
             if data:
                 data_list = json.loads(data)
