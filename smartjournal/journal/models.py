@@ -9,8 +9,12 @@ class Journal(TimeStampedModel):
     title =  models.CharField(max_length=2000)
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField()
-    file = models.FileField(default='newfile.txt')
+    files = models.FileField(null=True, blank=True)
+    audio_file = models.FileField(default=None, null=True, blank=True)
+
+
     message = models.TextField()
     date = models.DateField()
     is_private = models.BooleanField(default=False)
+    date = models.TextField()
     # is_therapy = models.BooleanField(default=False)

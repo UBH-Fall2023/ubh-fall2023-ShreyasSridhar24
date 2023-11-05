@@ -1,3 +1,4 @@
+import json
 from typing import Any
 import os
 import openai
@@ -31,11 +32,13 @@ fernet = Fernet(key)
 
 # Create your views here.
 
-class JournalAddView(LoginRequiredMixin, FormView):
+class JournalAddView(FormView):
 # class JournalAddView(FormView):
     model = Journal
     form_class = JournalForm
     template_name = 'journal/add_journal_entry.html'
+    pk_hold = 1
+    openai.api_key = "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"
 
 
     # def get_audio():
@@ -59,16 +62,35 @@ class JournalAddView(LoginRequiredMixin, FormView):
         date = form_data.get('date')
         is_private = form_data.get('is_private')
         image = form_data.get('image')            
-        file = form_data.get('file')
+        files = form_data.get('file')
+        audio = form_data.get("audio")
+        if(image):
+            image_ = Image.open(image)
+            text = pytesseract.image_to_string(image_)
+            print(text)
+            message = str(text)
         # process data here (image, file, message)
         # image_enc = bytearray(journal_entry.image)
         # for index, values in enumerate(image_enc):
         #     image_enc[index] = values ^ 1
         # image_enc.write(image_enc)
         # image_enc.close()
-        reader = easyocr.Reader(['en'])
-        image_words = reader.readtext(image, detail=0)
-        journal_entry = Journal.objects.create(title = fernet.encrypt(title.encode()), message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, file = file)
+        # reader = easyocr.Reader(['en'])
+        # # image_words = reader.readtext(image, detail=0)
+        # if(files):
+        #     message
+        completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "Give me a dictionary in JSON of the valence-arousal,anger,happiness,sadness scores of the following sentence on a scale of -1 to 1. \""+message+"\""},
+            # {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
+        ]
+        )
+        data = completion.choices[0].message["content"]
+
+
+        journal_entry = Journal.objects.create(title = fernet.encrypt(title.encode()), message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, files = files, data = data)
+        self.pk_hold = journal_entry.pk
         messages.success(self.request, f"Journal entry from {journal_entry.date} saved!")
         return super().form_valid(form)
     
@@ -154,6 +176,7 @@ class JournalOverview(TemplateView):
         return True
 
     def get(self, request, *args, **kwargs):
+        journal_obj = get_object_or_404(Journal, pk=self.kwargs.get('pk'))
         x_data = [0,1,2,3]
         y_data = [x**2 for x in x_data]
         plot_div = plot([Scatter(x=x_data, y=y_data,
@@ -162,6 +185,25 @@ class JournalOverview(TemplateView):
                output_type='div')
         context = {}
         context["sample_graph"] = plot_div
+        user = journal_obj.user
+        context["avg"] = 0
+        avg = 0
+        avg_n=0
+        for m in user.journal_set.all():
+            cav=0
+            avg_n+=1
+            for n in json.loads(m.data):
+                cav+=n
+            avg+=cav
+        context["avg"] == avg/avg_n
+        if(context["avg"]<=-0.5):
+            print("call therapy!")
+
+            
+
+
         return render(request, self.template_name, context)
-class JournalView(TemplateView):
-    template_name = 'journal/journal.html'
+# class JournalView(TemplateView):
+#     template_name = 'journal/journal.html'
+
+# class TherapistAlert():
