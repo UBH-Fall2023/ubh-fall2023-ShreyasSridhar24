@@ -130,11 +130,9 @@ class JournalAddView(FormView):
 
 
         journal_entry = Journal.objects.create(title = fernet.encrypt(title.encode()), message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, files = files, data = data)
-=======
         reader = easyocr.Reader(['en'])
         image_words = reader.readtext(image.read(), detail=0)
         journal_entry = Journal.objects.create(title = title, message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, file = file)
->>>>>>> Stashed changes
         self.pk_hold = journal_entry.pk
         messages.success(self.request, f"Journal entry from {journal_entry.date} saved!")
         return super().form_valid(form)
