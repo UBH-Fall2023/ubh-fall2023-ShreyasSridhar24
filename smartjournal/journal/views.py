@@ -1,5 +1,3 @@
-# from datetime import datetime
-import datetime
 import json
 from typing import Any
 import os
@@ -17,6 +15,7 @@ import pytesseract
 from PIL import Image
 # import cv2
 import numpy as np
+import speech_recognition as sr
 
 from plotly.offline import plot
 from plotly.graph_objs import Scatter
@@ -24,10 +23,7 @@ from plotly.graph_objs import Scatter
 from django.contrib.auth import authenticate, login
 
 import time
-import easyocr
-
-from skimage import io
-
+# import easyocr
 # import speech_recognition as sr
 # from gtts import gTTS
 
@@ -40,6 +36,14 @@ import bcrypt
 # Create your views here.
 
 # class JournalAddView(LoginRequiredMixin, FormView):
+
+# class GetAudio(FormView):
+#     model = Journal
+#     def get(self):
+
+        
+#         # files = form_data.get('files')
+
 class JournalAddView(FormView):
     model = Journal
     form_class = JournalForm
@@ -68,15 +72,43 @@ class JournalAddView(FormView):
         date = form_data.get('date')
         is_private = form_data.get('is_private')
         image = form_data.get('image')            
-        files = form_data.get('file')
-        audio = form_data.get("audio")
+        files = form_data.get('files')
+        audio = form_data.get("audio_file")
+        # files = form_data.get('files')
+
         if(image):
             image_ = Image.open(image)
             text = pytesseract.image_to_string(image_, lang="eng")
             message = str(text)
+        elif(files):
+            message = ""
+            with open(files,"rb") as f:
+                for m in f.readlines():
+                    message+=m
+        elif(audio):
+            print("omg audion")
+            r = sr.Recognizer()
+            with sr.AudioFile(audio) as source:
+                
+                audio_text = r.listen(source)
+                
+            # recoginize_() method will throw a request error if the API is unreachable, hence using exception handling
+                # try:
+                    
+                # using google speech recognition
+                text = r.recognize_google(audio_text)
+                print('Converting audio transcripts into text ...')
+                print(text)
+                message = text
+                    
+                # except:
+                #     print('Sorry.. run again...')
+
+
+
         # image = form_data.get('image')  
         # print(type(image))          
-        file = form_data.get('file')
+        
         # process data here (image, file, message)
         # image_enc = bytearray(journal_entry.image)
         # for index, values in enumerate(image_enc):
@@ -90,19 +122,19 @@ class JournalAddView(FormView):
         completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "Give me a dictionary in JSON of the valence-arousal,anger,happiness,sadness scores of the following sentence on a scale of -1 to 1, make sure the keys are valence-arousal,anger,happiness and sadness. \""+message+"\""},
+            {"role": "system", "content": "Give me a dictionary in JSON of the valence-arousal,anger,happiness,sadness scores of the following sentence on a scale of -1 to 1. \""+message+"\""},
             # {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
         ]
         )
         data = completion.choices[0].message["content"]
 
 
-        journal_entry = Journal.objects.create(title = title, message = message, date = date, is_private = is_private, image = image, files = files, data = data)
-        # if image:
-        #     img = io.imread(image)
-        #     reader = easyocr.Reader(['en'])
-        #     image_words = reader.readtext(img.read(), detail=0)
-        # journal_entry = Journal.objects.create(title = title, message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, file = file)
+        journal_entry = Journal.objects.create(title = fernet.encrypt(title.encode()), message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, files = files, data = data)
+=======
+        reader = easyocr.Reader(['en'])
+        image_words = reader.readtext(image.read(), detail=0)
+        journal_entry = Journal.objects.create(title = title, message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, file = file)
+>>>>>>> Stashed changes
         self.pk_hold = journal_entry.pk
         messages.success(self.request, f"Journal entry from {journal_entry.date} saved!")
         return super().form_valid(form)
@@ -199,17 +231,12 @@ class JournalOverview(TemplateView):
         avg_n=0
         listify = []
         streak = 0
-        queryset = Journal.objects.all()
-        # print(type(list(queryset)))
-        queryset = list(queryset)
+        queryset = Journal.objects.all().values()
+        print(type(queryset))
         for journal in queryset:
             data = journal.data
             date = journal.date
-            if queryset.index(journal) != len(queryset)-1:
-                if (datetime.date.today() + datetime.timedelta(days=-1)) == datetime.date.today():
-                    streak += 1
-                else:
-                    streak = 0
+            # if 
             print(data)
             if data:
                 data_list = json.loads(data)
