@@ -7,3 +7,4 @@ cryptography
 django-audiofield
 gtts
 openai
+SpeechRecognition

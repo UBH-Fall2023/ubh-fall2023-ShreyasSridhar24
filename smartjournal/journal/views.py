@@ -1,3 +1,4 @@
+import datetime
 import json
 from typing import Any
 import os
@@ -85,21 +86,21 @@ class JournalAddView(FormView):
             with open(files,"rb") as f:
                 for m in f.readlines():
                     message+=m
-        elif(audio):
-            print("omg audion")
-            r = sr.Recognizer()
-            with sr.AudioFile(audio) as source:
+        # elif(audio):
+        #     print("omg audion")
+        #     r = sr.Recognizer()
+        #     with sr.AudioFile(audio) as source:
                 
-                audio_text = r.listen(source)
+        #         audio_text = r.listen(source)
                 
-            # recoginize_() method will throw a request error if the API is unreachable, hence using exception handling
-                # try:
+        #     # recoginize_() method will throw a request error if the API is unreachable, hence using exception handling
+        #         # try:
                     
-                # using google speech recognition
-                text = r.recognize_google(audio_text)
-                print('Converting audio transcripts into text ...')
-                print(text)
-                message = text
+        #         # using google speech recognition
+        #         text = r.recognize_google(audio_text)
+        #         print('Converting audio transcripts into text ...')
+        #         print(text)
+        #         message = text
                     
                 # except:
                 #     print('Sorry.. run again...')
@@ -231,11 +232,17 @@ class JournalOverview(TemplateView):
         streak = 0
         queryset = Journal.objects.all()
         print(type(queryset))
-        queryset = queryset
+        queryset = list(queryset)
         for journal in queryset:
             data = journal.data
             date = journal.date
             # if 
+            if queryset.index(journal) != 0:
+                if (queryset[queryset.index(journal)-1].date + datetime.timedelta(days=+1)) == date:
+                    streak += 1
+                else:
+                    streak = 0
+
             print(data)
             if data:
                 data_list = json.loads(data)
