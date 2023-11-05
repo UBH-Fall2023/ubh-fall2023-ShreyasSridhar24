@@ -31,20 +31,22 @@
     margin: 0;
   }
 
-  {% comment %} .bg-image {
+  .bg-image {
     /* The image used */
-    /* Add the blur effect */ {% endcomment %}
+    background-image: url('https://img.freepik.com/premium-photo/dramatic-sunset-sky-landscape-background_692702-7717.jpg');
+
+    /* Add the blur effect */
     {% comment %} filter: blur(8px);
     -webkit-filter: blur(8px); {% endcomment %}
    
-    {% comment %} /* Full height */
+    /* Full height */
     height: 100%;
    
     /* Center and scale the image nicely */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-  } {% endcomment %}
+  }
 
   .bg-text {
     background-color: rgba(255, 255, 255, 0.5); /* White text container with half opacity */
@@ -80,7 +82,7 @@
 <body>
 
 <div class="bg-image"></div>
-<img src={% static "bg.png" %} alt="cloud"></img>
+<img src={% static 'cloud.png' %} alt="cloud"></img>
 <div class="bg-text">
   <h1>Journally</h1>
   <p>live the life of your dreams</p>
