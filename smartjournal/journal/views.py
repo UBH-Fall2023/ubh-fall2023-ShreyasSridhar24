@@ -196,8 +196,13 @@ class JournalOverview(TemplateView):
         avg = 0
         avg_n=0
         listify = []
-        for journal in Journal.objects.all():
+        streak = 0
+        queryset = Journal.objects.all().values()
+        print(type(queryset))
+        for journal in queryset:
             data = journal.data
+            date = journal.date
+            # if 
             print(data)
             if data:
                 data_list = json.loads(data)
@@ -218,11 +223,19 @@ class JournalOverview(TemplateView):
                         mode='lines', name='test',
                         opacity=0.8, marker_color='green')],
                output_type='div')
+        
         context = {}
         context["sample_graph"] = plot_div
         print(x_data)
         print(y_data)
         context["avg"] = avg
+        # streak = 0
+        # for y in range(len(x_data)):
+        #     if y == x_data[y]:
+        #         streak += 1
+        #     elif y != x_data[y]:
+        #         streak = 0
+        context["streak"] = streak
         if "avg" in context and context["avg"] <= -0.5:
             print("Call therapy!")
 

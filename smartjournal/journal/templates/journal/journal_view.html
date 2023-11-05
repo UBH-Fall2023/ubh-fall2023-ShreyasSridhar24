@@ -14,18 +14,17 @@
         <a class="nav-link" href="journal-dashboard">Dashboard</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="../admin">Administration</a>
+        <a class="nav-link" href="../admin">Manage Your Entries</a>
       </li>
     </ul>
   </div>
 </nav>
 <div style="padding: 20px">
   <h1> My month in review </h1>
+  <h3> My journaling streak: {{ streak }}</h3>
   {% autoescape off %}
   {{ sample_graph }}
   {% endautoescape %}
-  {{ streak }}
-  {{ avg }}
 </div>
 {% endblock %}
 
