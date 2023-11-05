@@ -9,6 +9,9 @@ from django.contrib import messages
 from journal.forms import JournalForm
 from journal.models import Journal
 
+from plotly.offline import plot
+from plotly.graph_objs import Scatter
+
 # Create your views here.
 
 # class JournalAddView(LoginRequiredMixin, FormView):
@@ -42,7 +45,8 @@ class JournalAddView(FormView):
         messages.success(self.request, 'Added journal entry.')
         return reverse('journal-add')
     
-class JournalDetailView(LoginRequiredMixin, TemplateView):
+class JournalDetailView(TemplateView):
+    template_name = 'journal/journal_view.html'
     def test_func(self):
         """ UserPassesTestMixin Tests"""
         if self.request.user.is_superuser:
@@ -58,12 +62,23 @@ class JournalDetailView(LoginRequiredMixin, TemplateView):
 
         messages.error(self.request, 'You do not have permission to download all notes.')
     
-    def get_context_data(self, kwargs):
-        context = super().get_context_data(**kwargs)
-        pk = self.kwargs.get('pk')
+    def get(self, request, *args, **kwargs):
+        x_data = [0,1,2,3]
+        y_data = [x**2 for x in x_data]
+        plot_div = plot([Scatter(x=x_data, y=y_data,
+                        mode='lines', name='test',
+                        opacity=0.8, marker_color='green')],
+               output_type='div')
+        context = {}
+        context["sample_graph"] = plot_div
+        return render(request, self.template_name, context)
+
+    # def get_context_data(self, **kwargs):
+        # context = super().get_context_data(**kwargs)
+        # pk = self.kwargs.get('pk')
         # allocation_obj = get_object_or_404(Allocation, pk=pk)
-        journal_obj = get_object_or_404(Journal, pk=pk)
-        context["jounral"] = journal_obj
+        # journal_obj = get_object_or_404(Journal, pk=pk)
+        # context["journal"] = journal_obj
 
         return context
     
