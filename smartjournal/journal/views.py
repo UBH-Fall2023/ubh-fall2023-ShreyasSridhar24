@@ -16,6 +16,7 @@ from plotly.graph_objs import Scatter
 
 # class JournalAddView(LoginRequiredMixin, FormView):
 class JournalAddView(FormView):
+    model = Journal
     form_class = JournalForm
     template_name = 'journal/add_journal_entry.html'
     
@@ -28,7 +29,7 @@ class JournalAddView(FormView):
             date = form_data.get('date'),
             is_private = form_data.get('is_private'),
         )
-
+        messages.success(self.request, f"Journal entry from {journal_entry.date} saved!")
         return super().form_valid(form)
     
     # def get_context_data(self, *args, **kwargs):
