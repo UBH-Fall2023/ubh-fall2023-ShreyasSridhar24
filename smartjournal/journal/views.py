@@ -12,7 +12,7 @@ from journal.forms import JournalForm
 from journal.models import Journal
 import pytesseract
 from PIL import Image
-import cv2
+# import cv2
 import numpy as np
 
 from plotly.offline import plot
@@ -21,7 +21,7 @@ from plotly.graph_objs import Scatter
 from django.contrib.auth import authenticate, login
 
 import time
-import easyocr
+# import easyocr
 # import speech_recognition as sr
 # from gtts import gTTS
 
@@ -163,3 +163,5 @@ class JournalOverview(TemplateView):
         context = {}
         context["sample_graph"] = plot_div
         return render(request, self.template_name, context)
+class JournalView(TemplateView):
+    template_name = 'journal/journal.html'
