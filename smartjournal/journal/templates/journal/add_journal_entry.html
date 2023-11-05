@@ -8,19 +8,26 @@
     <!-- Links -->
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="">Add Entry</a>
+        <a class="nav-link" href="journal-add">Add Entry</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="journal-detail">Dashboard</a>
+        <a class="nav-link" href="journal-dashboard">Dashboard</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="../admin">Administration</a>
+        <a class="nav-link" href="../admin">Manage Your Entries</a>
       </li>
     </ul>
   </div>
-
 </nav>
 <div style="padding: 20px;">
+    <audio id="audio-preview" controls></audio>
+    <button id="start-record">Start Recording</button>
+    <button id="stop-record" disabled>Stop Recording</button>
+    <form method="post" action="{% url 'save_recording' %}">
+    {% csrf_token %}
+    <input type="hidden" name="audio_data" id="audio-data">
+    <button type="submit">Save Recording</button>
+</form>
   <h1> How are you feeling today? </h1>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}

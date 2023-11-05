@@ -22,7 +22,10 @@ from plotly.graph_objs import Scatter
 from django.contrib.auth import authenticate, login
 
 import time
-# import easyocr
+import easyocr
+
+from skimage import io
+
 # import speech_recognition as sr
 # from gtts import gTTS
 
@@ -34,22 +37,13 @@ import bcrypt
 
 # Create your views here.
 
-<<<<<<< Updated upstream
-class JournalAddView(FormView):
-# class JournalAddView(FormView):
-=======
 # class JournalAddView(LoginRequiredMixin, FormView):
 class JournalAddView(FormView):
->>>>>>> Stashed changes
     model = Journal
     form_class = JournalForm
     template_name = 'journal/add_journal_entry.html'
     pk_hold = 1
-<<<<<<< Updated upstream
     openai.api_key = "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"
-
-=======
->>>>>>> Stashed changes
 
     # def get_audio():
     #     r = sr.Recognizer()
@@ -71,27 +65,22 @@ class JournalAddView(FormView):
         message = form_data.get('message')
         date = form_data.get('date')
         is_private = form_data.get('is_private')
-<<<<<<< Updated upstream
         image = form_data.get('image')            
         files = form_data.get('file')
         audio = form_data.get("audio")
         if(image):
             image_ = Image.open(image)
-            text = pytesseract.image_to_string(image_)
-            print(text)
+            text = pytesseract.image_to_string(image_, lang="eng")
             message = str(text)
-=======
-        image = form_data.get('image')  
-        print(type(image))          
+        # image = form_data.get('image')  
+        # print(type(image))          
         file = form_data.get('file')
->>>>>>> Stashed changes
         # process data here (image, file, message)
         # image_enc = bytearray(journal_entry.image)
         # for index, values in enumerate(image_enc):
         #     image_enc[index] = values ^ 1
         # image_enc.write(image_enc)
         # image_enc.close()
-<<<<<<< Updated upstream
         # reader = easyocr.Reader(['en'])
         # # image_words = reader.readtext(image, detail=0)
         # if(files):
@@ -106,12 +95,12 @@ class JournalAddView(FormView):
         data = completion.choices[0].message["content"]
 
 
-        journal_entry = Journal.objects.create(title = fernet.encrypt(title.encode()), message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, files = files, data = data)
-=======
-        reader = easyocr.Reader(['en'])
-        image_words = reader.readtext(image.read(), detail=0)
-        journal_entry = Journal.objects.create(title = title, message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, file = file)
->>>>>>> Stashed changes
+        journal_entry = Journal.objects.create(title = title, message = message, date = date, is_private = is_private, image = image, files = files, data = data)
+        # if image:
+        #     img = io.imread(image)
+        #     reader = easyocr.Reader(['en'])
+        #     image_words = reader.readtext(img.read(), detail=0)
+        # journal_entry = Journal.objects.create(title = title, message = fernet.encrypt(message.encode()), date = date, is_private = is_private, image = image, file = file)
         self.pk_hold = journal_entry.pk
         messages.success(self.request, f"Journal entry from {journal_entry.date} saved!")
         return super().form_valid(form)
@@ -166,17 +155,17 @@ class JournalDetailView(DetailView):
 
         # context["data"] = data
 
-        completion2 = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Pretend you are a therapist. Give me some feedback about the next string as if it was a private entry in my journal. \""+journal_obj.message+"\""},
-            # {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
-        ]
-        )
+        # completion2 = openai.ChatCompletion.create(
+        # model="gpt-3.5-turbo",
+        # messages=[
+        #     {"role": "system", "content": "Pretend you are a therapist. Give me some feedback about the next string as if it was a private entry in my journal. \""+journal_obj.message+"\""},
+        #     # {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
+        # ]
+        # )
 
-        data2 = completion2.choices[0].message["content"]
-        context["data2"]= str(data2)
-        print(data2)
+        # data2 = completion2.choices[0].message["content"]
+        # context["data2"]= str(data2)
+        # print(data2)
         return context
     # pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
@@ -186,7 +175,7 @@ class JournalDetailView(DetailView):
     
 class JournalOverview(TemplateView):
     model = Journal
-    template_name = 'journal/journal_overview.html'
+    template_name = 'journal/journal_view.html'
     openai.api_key = "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"
     print(openai.api_key)
 
@@ -195,35 +184,60 @@ class JournalOverview(TemplateView):
         # if self.request.user.is_superuser:
         #     return True
 
-        journal_obj = get_object_or_404(Journal, pk=self.kwargs.get('pk'))
+        # journal_obj = get_object_or_404(Journal, pk=self.kwargs.get('pk'))
         return True
 
     def get(self, request, *args, **kwargs):
-        journal_obj = get_object_or_404(Journal, pk=self.kwargs.get('pk'))
-        x_data = [0,1,2,3]
-        y_data = [x**2 for x in x_data]
+        # journal_obj = get_object_or_404(Journal, pk=self.kwargs.get('pk'))
+        context = {}
+        user = self.request.user
+        context["avg"] = 0
+        print(Journal.objects.all())
+        avg = 0
+        avg_n=0
+        listify = []
+        streak = 0
+        queryset = Journal.objects.all().values()
+        print(type(queryset))
+        for journal in queryset:
+            data = journal.data
+            date = journal.date
+            # if 
+            print(data)
+            if data:
+                data_list = json.loads(data)
+                # print(type(data_list))
+                if data_list:
+                    # try:
+                    avg_n += 1
+                    avg += (data_list["valence"] + data_list["arousal"] + data_list["anger"] + data_list["happiness"] + data_list["sadness"])/5
+                    # except Exception as e:
+                    #     avg+=0
+                    #     avg_n+=0
+
+                    if avg_n > 0:
+                        listify.append(avg)
+        x_data = [x for x in range(avg_n)]
+        y_data = listify
         plot_div = plot([Scatter(x=x_data, y=y_data,
                         mode='lines', name='test',
                         opacity=0.8, marker_color='green')],
                output_type='div')
+        
         context = {}
         context["sample_graph"] = plot_div
-        user = journal_obj.user
-        context["avg"] = 0
-        avg = 0
-        avg_n=0
-        for m in user.journal_set.all():
-            cav=0
-            avg_n+=1
-            for n in json.loads(m.data):
-                cav+=n
-            avg+=cav
-        context["avg"] == avg/avg_n
-        if(context["avg"]<=-0.5):
-            print("call therapy!")
-
-            
-
+        print(x_data)
+        print(y_data)
+        context["avg"] = avg
+        # streak = 0
+        # for y in range(len(x_data)):
+        #     if y == x_data[y]:
+        #         streak += 1
+        #     elif y != x_data[y]:
+        #         streak = 0
+        context["streak"] = streak
+        if "avg" in context and context["avg"] <= -0.5:
+            print("Call therapy!")
 
         return render(request, self.template_name, context)
 # class JournalView(TemplateView):
