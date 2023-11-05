@@ -1,37 +1,56 @@
 <!DOCTYPE html>
+{% comment %} {% extends "journal/base.html" %} {% endcomment %}
+{% load crispy_forms_tags %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<link href="https://fonts.cdnfonts.com/css/league-spartan" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/merriweather" rel="stylesheet">
+
+{% load static %}
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Journaly Landing Page</title>
+<title>Journally Landing Page</title>
 <style>
+
+  @import url('https://fonts.cdnfonts.com/css/league-spartan');
+  @import url('https://fonts.cdnfonts.com/css/merriweather');
+
+  @font-face {
+    font-family: 'League Spartan';
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  html * {
+    font-family: 'League Spartan';
+  }
+
   body, html {
     height: 100%;
     margin: 0;
   }
 
-  .bg-image {
+  {% comment %} .bg-image {
     /* The image used */
-    background-image: url('https://img.freepik.com/premium-photo/pink-purple-fluffy-clouds-ground-sunrise-dramatic-sky_124507-21488.jpg?w=1800');
-
-    /* Add the blur effect */
-    filter: blur(8px);
-    -webkit-filter: blur(8px);
+    /* Add the blur effect */ {% endcomment %}
+    {% comment %} filter: blur(8px);
+    -webkit-filter: blur(8px); {% endcomment %}
    
-    /* Full height */
+    {% comment %} /* Full height */
     height: 100%;
    
     /* Center and scale the image nicely */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-  }
+  } {% endcomment %}
 
   .bg-text {
     background-color: rgba(255, 255, 255, 0.5); /* White text container with half opacity */
     color: black;
     font-weight: bold;
-    border: 3px solid #f1f1f1;
+    {% comment %} border: 3px solid #f1f1f1; {% endcomment %}
     position: absolute;
     top: 50%;
     left: 50%;
@@ -48,18 +67,39 @@
   }
 
   .bg-text p {
+    font-family: 'Merriweather', sans-serif;
     font-size: 30px;
-    color: red; /* I've assumed the 'live the life of your dreams' is red */
+    color: #fa0644;
+  }
+
+  body {
+    font-family: 'League Spartan', sans-serif;
   }
 </style>
 </head>
 <body>
 
 <div class="bg-image"></div>
-
+<img src={% static "bg.png" %} alt="cloud"></img>
 <div class="bg-text">
   <h1>Journally</h1>
   <p>live the life of your dreams</p>
+  <nav class="navbar">
+    <div class="container-fluid d-flex align-items-center justify-content-center">
+      <!-- Links -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <button><a class="nav-link" href="/">Start journaling</a></button>
+        </li>
+        {% comment %} <li class="nav-item">
+          <a class="nav-link" href="../journal-dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../admin">Manage Your Entries</a>
+        </li> {% endcomment %}
+      </ul>
+    </div>
+  </nav>
 </div>
 
 </body>

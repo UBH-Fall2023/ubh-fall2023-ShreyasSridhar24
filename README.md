@@ -1,6 +1,5 @@
 # Welcome to our app!
-=======
-#Journal
+
 🌟 Welcome to Journally - Your Emotional Compass! 🌈
 
 Feeling overwhelmed with life’s ups and downs? 😰👎 Journally is here to be your stress-buster buddy! With just a simple click, you can reflect, track, and share your emotional journey with those who care. 📱❤️

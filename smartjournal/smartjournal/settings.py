@@ -123,6 +123,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = 'static'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = 'media'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
 
 LOGIN_URL = 'login'
 
