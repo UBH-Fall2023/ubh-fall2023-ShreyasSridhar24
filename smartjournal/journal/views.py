@@ -90,7 +90,7 @@ class JournalAddView(FormView):
         completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "Give me a dictionary in JSON of the valence-arousal,anger,happiness,sadness scores of the following sentence on a scale of -1 to 1. \""+message+"\""},
+            {"role": "system", "content": "Give me a dictionary in JSON of the valence-arousal,anger,happiness,sadness scores of the following sentence on a scale of -1 to 1, make sure the keys are valence-arousal,anger,happiness and sadness. \""+message+"\""},
             # {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
         ]
         )
